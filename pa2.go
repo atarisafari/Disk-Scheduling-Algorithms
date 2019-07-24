@@ -26,6 +26,7 @@ type System struct {
   lowerCyl int
   upperCyl int
   curCyl int
+  traversed int
 }
 
 // var input = os.Args[1]
@@ -84,5 +85,13 @@ func processInput() {
 }
 
 func fcfs(procList []Process, sys System) {
+  for _, p := range procList {
 
+    if(p.position > sys.upperCyl || p.position < sys.lowerCyl) {
+      fmt.Println("Out of bounds")
+    } else {
+      sys.curCyl = p.position
+      fmt.Println("Servicing",p.position)
+    }
+  }
 }
