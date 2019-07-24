@@ -12,24 +12,24 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"strconv"
 	"strings"
-  "math"
 	//"sort"
 )
 
 type Process struct {
-  position int
-  accessed bool
-  difference int 
+	position   int
+	accessed   bool
+	difference int
 }
 
 type System struct {
-  lowerCyl int
-  upperCyl int
-  curCyl int
-  traversed int
+	lowerCyl  int
+	upperCyl  int
+	curCyl    int
+	traversed int
 }
 
 // var input = os.Args[1]
@@ -44,8 +44,8 @@ func main() {
 func processInput() {
 
 	var sys System
-  var alg string
-  var procList []Process
+	var alg string
+	var procList []Process
 
 	for {
 		line, _, err := reader.ReadLine()
@@ -62,54 +62,54 @@ func processInput() {
 		switch instruction {
 		case "use":
 			alg = words[1]
-      fmt.Println("Seek algorithm:",alg)
+			fmt.Println("Seek algorithm:", strings.ToUpper(alg))
 		case "lowerCYL":
 			sys.lowerCyl, _ = strconv.Atoi(words[1])
-      fmt.Printf("\tLower cylinder: %5d\n",sys.lowerCyl)
+			fmt.Printf("\tLower cylinder: %5d\n", sys.lowerCyl)
 		case "upperCYL":
 			sys.upperCyl, _ = strconv.Atoi(words[1])
-      fmt.Printf("\tUpper cylinder: %5d\n",sys.upperCyl)
+			fmt.Printf("\tUpper cylinder: %5d\n", sys.upperCyl)
 		case "initCYL":
 			sys.curCyl, _ = strconv.Atoi(words[1])
-      fmt.Printf("\tInit cylinder: %5d\n",sys.curCyl)
-      fmt.Println("\tCylinder requests:")
+			fmt.Printf("\tInit cylinder:  %5d\n", sys.curCyl)
+			fmt.Println("\tCylinder requests:")
 		case "cylreq":
-      var p Process
-      p.position, _ = strconv.Atoi(words[1])
+			var p Process
+			p.position, _ = strconv.Atoi(words[1])
 			procList = append(procList, p)
-      fmt.Printf("\t\tCylinder: %5d\n",p.position)
+			fmt.Printf("\t\tCylinder: %5d\n", p.position)
 		}
 
 	}
-  switch alg {
-      case "fcfs":
-        fcfs(procList,sys)
-  }
+	switch alg {
+	case "fcfs":
+		fcfs(procList, sys)
+	}
 }
 
 func fcfs(procList []Process, sys System) {
-  for _, p := range procList {
+	for _, p := range procList {
 
-    if(p.position > sys.upperCyl || p.position < sys.lowerCyl) {
-      fmt.Println("Out of bounds")
-    } else {
-      sys.traversed += int(math.Abs(float64(p.position - sys.curCyl)))
-      sys.curCyl = p.position
-      fmt.Printf("Servicing %5d\n",p.position)
-    }
-  }
+		if p.position > sys.upperCyl || p.position < sys.lowerCyl {
+			fmt.Println("Out of bounds")
+		} else {
+			sys.traversed += int(math.Abs(float64(p.position - sys.curCyl)))
+			sys.curCyl = p.position
+			fmt.Printf("Servicing %5d\n", p.position)
+		}
+	}
 
-  fmt.Print("FCFS traversal count = ", sys.traversed)
+	fmt.Print("FCFS traversal count = ", sys.traversed)
 }
 
 func sstf(procList []Process, sys System) {
 
 }
 
-func calcDiff(procList []Process, sys System) []Process{
-  for _, p := range procList {
-    p.difference = int(math.Abs(float64(p.position - sys.curCyl)))
-  }
+func calcDiff(procList []Process, sys System) []Process {
+	for _, p := range procList {
+		p.difference = int(math.Abs(float64(p.position - sys.curCyl)))
+	}
 
-  return procList
+	return procList
 }
