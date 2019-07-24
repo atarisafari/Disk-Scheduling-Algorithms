@@ -15,6 +15,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+  "math"
 	//"sort"
 )
 
@@ -27,6 +28,7 @@ type System struct {
   upperCyl int
   curCyl int
   traversed int
+  accessed bool
 }
 
 // var input = os.Args[1]
@@ -90,8 +92,15 @@ func fcfs(procList []Process, sys System) {
     if(p.position > sys.upperCyl || p.position < sys.lowerCyl) {
       fmt.Println("Out of bounds")
     } else {
+      sys.traversed += int(math.Abs(float64(p.position - sys.curCyl)))
       sys.curCyl = p.position
       fmt.Println("Servicing",p.position)
     }
   }
+
+  fmt.Print("FCFS traversal count = ", sys.traversed)
+}
+
+func sstf(proclist []Process, sys System) {
+
 }
