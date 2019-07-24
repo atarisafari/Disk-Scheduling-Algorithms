@@ -64,19 +64,19 @@ func processInput() {
       fmt.Println("Seek algorithm:",alg)
 		case "lowerCYL":
 			sys.lowerCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("Lower cylinder:",sys.lowerCyl)
+      fmt.Println("\tLower cylinder:",sys.lowerCyl)
 		case "upperCYL":
 			sys.upperCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("Upper cylinder:",sys.upperCyl)
+      fmt.Println("\tUpper cylinder:",sys.upperCyl)
 		case "initCYL":
 			sys.curCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("Init cylinder:",sys.curCyl)
-      fmt.Println("Cylinder requests:")
+      fmt.Println("\tInit cylinder:",sys.curCyl)
+      fmt.Println("\tCylinder requests:")
 		case "cylreq":
       var p Process
       p.position, _ = strconv.Atoi(words[1])
 			procList = append(procList, p)
-      fmt.Println("Cylinder:",p.position)
+      fmt.Println("\t\tCylinder:",p.position)
 		}
 
 	}
