@@ -39,7 +39,7 @@ func main() {
 
 func processInput() {
 
-	var lowerCyl, upperCyl, curCyl int
+	var sys System
   var alg string
   var procList []Process
 
@@ -60,14 +60,14 @@ func processInput() {
 			alg = words[1]
       fmt.Println("Seek algorithm:",alg)
 		case "lowerCYL":
-			lowerCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("Lower cylinder:",lowerCyl)
+			sys.lowerCyl, _ = strconv.Atoi(words[1])
+      fmt.Println("Lower cylinder:",sys.lowerCyl)
 		case "upperCYL":
-			upperCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("Upper cylinder:",upperCyl)
+			sys.upperCyl, _ = strconv.Atoi(words[1])
+      fmt.Println("Upper cylinder:",sys.upperCyl)
 		case "initCYL":
-			curCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("Init cylinder:",curCyl)
+			sys.curCyl, _ = strconv.Atoi(words[1])
+      fmt.Println("Init cylinder:",sys.curCyl)
       fmt.Println("Cylinder requests:")
 		case "cylreq":
       var p Process
@@ -79,10 +79,10 @@ func processInput() {
 	}
   switch alg {
       case "fcfs":
-        fcfs(procList)
+        fcfs(procList,sys)
   }
 }
 
-func fcfs(procList []Process) {
+func fcfs(procList []Process, sys System) {
 
 }
