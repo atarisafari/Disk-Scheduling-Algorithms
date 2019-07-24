@@ -64,19 +64,19 @@ func processInput() {
       fmt.Println("Seek algorithm:",alg)
 		case "lowerCYL":
 			sys.lowerCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("\tLower cylinder:",sys.lowerCyl)
+      fmt.Printf("\tLower cylinder: %5d\n",sys.lowerCyl)
 		case "upperCYL":
 			sys.upperCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("\tUpper cylinder:",sys.upperCyl)
+      fmt.Printf("\tUpper cylinder: %5d\n",sys.upperCyl)
 		case "initCYL":
 			sys.curCyl, _ = strconv.Atoi(words[1])
-      fmt.Println("\tInit cylinder:",sys.curCyl)
+      fmt.Printf("\tInit cylinder: %5d\n",sys.curCyl)
       fmt.Println("\tCylinder requests:")
 		case "cylreq":
       var p Process
       p.position, _ = strconv.Atoi(words[1])
 			procList = append(procList, p)
-      fmt.Println("\t\tCylinder:",p.position)
+      fmt.Printf("\t\tCylinder: %5d\n",p.position)
 		}
 
 	}
@@ -94,7 +94,7 @@ func fcfs(procList []Process, sys System) {
     } else {
       sys.traversed += int(math.Abs(float64(p.position - sys.curCyl)))
       sys.curCyl = p.position
-      fmt.Println("Servicing",p.position)
+      fmt.Printf("Servicing %5d\n",p.position)
     }
   }
 
