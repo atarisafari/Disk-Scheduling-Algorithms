@@ -21,6 +21,7 @@ import (
 
 type Process struct {
   position int
+  accessed bool
 }
 
 type System struct {
@@ -28,7 +29,6 @@ type System struct {
   upperCyl int
   curCyl int
   traversed int
-  accessed bool
 }
 
 // var input = os.Args[1]
