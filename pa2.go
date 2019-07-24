@@ -22,7 +22,7 @@ import (
 type Process struct {
   position int
   accessed bool
-  difference int
+  difference int 
 }
 
 type System struct {
@@ -102,6 +102,14 @@ func fcfs(procList []Process, sys System) {
   fmt.Print("FCFS traversal count = ", sys.traversed)
 }
 
-func sstf(proclist []Process, sys System) {
+func sstf(procList []Process, sys System) {
 
+}
+
+func calcDiff(procList []Process, sys System) []Process{
+  for _, p := range procList {
+    p.difference = int(math.Abs(float64(p.position - sys.curCyl)))
+  }
+
+  return procList
 }
