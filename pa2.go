@@ -22,6 +22,7 @@ import (
 type Process struct {
   position int
   accessed bool
+  difference int
 }
 
 type System struct {
