@@ -22,6 +22,12 @@ type Process struct {
   position int
 }
 
+type System struct {
+  lowerCyl int
+  upperCyl int
+  curCyl int
+}
+
 // var input = os.Args[1]
 var input = "fcfs01.txt"
 var in, err1 = os.Open(input)
@@ -33,7 +39,7 @@ func main() {
 
 func processInput() {
 
-  var lowerCyl, upperCyl, curCyl int
+	var lowerCyl, upperCyl, curCyl int
   var alg string
   var procList []Process
 
@@ -52,29 +58,29 @@ func processInput() {
 		switch instruction {
 		case "use":
 			alg = words[1]
+      fmt.Println("Seek algorithm:",alg)
 		case "lowerCYL":
 			lowerCyl, _ = strconv.Atoi(words[1])
+      fmt.Println("Lower cylinder:",lowerCyl)
 		case "upperCYL":
 			upperCyl, _ = strconv.Atoi(words[1])
+      fmt.Println("Upper cylinder:",upperCyl)
 		case "initCYL":
 			curCyl, _ = strconv.Atoi(words[1])
+      fmt.Println("Init cylinder:",curCyl)
+      fmt.Println("Cylinder requests:")
 		case "cylreq":
       var p Process
       p.position, _ = strconv.Atoi(words[1])
 			procList = append(procList, p)
+      fmt.Println("Cylinder:",p.position)
 		}
 
 	}
-
   switch alg {
       case "fcfs":
         fcfs(procList)
   }
-
-	fmt.Println("Lower Cylinder:", lowerCyl)
-	fmt.Println("Upper Cylinder:", upperCyl)
-	fmt.Println("Initial Cylinder:", curCyl)
-
 }
 
 func fcfs(procList []Process) {
