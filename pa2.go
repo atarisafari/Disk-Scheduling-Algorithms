@@ -62,25 +62,33 @@ func processInput() {
 		switch instruction {
 		case "use":
 			alg = words[1]
-			fmt.Println("Seek algorithm:", strings.ToUpper(alg))
 		case "lowerCYL":
 			sys.lowerCyl, _ = strconv.Atoi(words[1])
-			fmt.Printf("\tLower cylinder: %5d\n", sys.lowerCyl)
 		case "upperCYL":
 			sys.upperCyl, _ = strconv.Atoi(words[1])
-			fmt.Printf("\tUpper cylinder: %5d\n", sys.upperCyl)
 		case "initCYL":
 			sys.curCyl, _ = strconv.Atoi(words[1])
-			fmt.Printf("\tInit cylinder:  %5d\n", sys.curCyl)
-			fmt.Println("\tCylinder requests:")
 		case "cylreq":
 			var p Process
 			p.position, _ = strconv.Atoi(words[1])
-			procList = append(procList, p)
-			fmt.Printf("\t\tCylinder: %5d\n", p.position)
+
+      if(p.position < sys.lowerCyl || p.position > sys.upperCyl) {
+        fmt.Printf("ERROR(15):Request out of bounds:  req (%d) > upper (%d) or < lower (%d)\n", p.position, sys.upperCyl, sys.lowerCyl)
+      } else { procList = append(procList, p) }
 		}
 
 	}
+
+  fmt.Println("Seek algorithm:", strings.ToUpper(alg))
+  fmt.Printf("\tLower cylinder: %5d\n", sys.lowerCyl)
+  fmt.Printf("\tUpper cylinder: %5d\n", sys.upperCyl)
+  fmt.Printf("\tInit cylinder:  %5d\n", sys.curCyl)
+	fmt.Println("\tCylinder requests:")
+
+  for _, p := range procList {
+    fmt.Printf("\t\tCylinder: %5d\n", p.position)
+  }
+
 	switch alg {
 	case "fcfs":
 		fcfs(procList, sys)
