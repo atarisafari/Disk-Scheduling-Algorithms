@@ -133,6 +133,8 @@ func sstf(procList []Process, sys System) {
 
     //Maybe keep a counter for # procs visited, and if it's equal to proc len
     // then we break
+	
+    //OR maybe just remove visited elements from procList ...
 }
 
 func calcDiff(procList []Process, sys System) []Process {
