@@ -121,7 +121,18 @@ func fcfs(procList []Process, sys System) {
 }
 
 func sstf(procList []Process, sys System) {
+  //Loop until all processes are visited 
+    //Pass proclist and sys into calc diff
+    //Find min distance of proclist
+    //Go there aka set curCyl to that position
+    //Set that process as visited 
+    //Add that distance to sys.traversed
 
+    //If you're changing the order of procList as you loop through it you
+    //will run into problems 
+
+    //Maybe keep a counter for # procs visited, and if it's equal to proc len
+    // then we break
 }
 
 func calcDiff(procList []Process, sys System) []Process {
