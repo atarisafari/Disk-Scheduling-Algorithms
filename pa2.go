@@ -72,9 +72,9 @@ func processInput() {
 			var p Process
 			p.position, _ = strconv.Atoi(words[1])
 
-      if(p.position < sys.lowerCyl || p.position > sys.upperCyl) {
-        fmt.Printf("ERROR(15):Request out of bounds:  req (%d) > upper (%d) or < lower (%d)\n", p.position, sys.upperCyl, sys.lowerCyl)
-      } else { procList = append(procList, p) }
+      		if(p.position < sys.lowerCyl || p.position > sys.upperCyl) {
+        		fmt.Printf("ERROR(15):Request out of bounds:  req (%d) > upper (%d) or < lower (%d)\n", p.position, sys.upperCyl, sys.lowerCyl)
+      		} else { procList = append(procList, p) }
 		}
 
 	}
