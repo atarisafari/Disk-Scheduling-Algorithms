@@ -66,15 +66,25 @@ func processInput() {
 			sys.lowerCyl, _ = strconv.Atoi(words[1])
 		case "upperCYL":
 			sys.upperCyl, _ = strconv.Atoi(words[1])
+      if(sys.upperCyl < sys.lowerCyl) {
+        fmt.Printf("ABORT(13):upper (%d) < lower (%d)\n", sys.upperCyl, sys.lowerCyl)
+        return
+      }
 		case "initCYL":
 			sys.curCyl, _ = strconv.Atoi(words[1])
+      if(sys.curCyl > sys.upperCyl) {
+        fmt.Printf("ABORT(11):initial (%d) > upper (%d)\n", sys.curCyl, sys.upperCyl)
+        return
+      } else if(sys.curCyl < sys.lowerCyl) {
+        fmt.Printf("ABORT(12):initial (%d) < lower (%d)\n", sys.curCyl, sys.lowerCyl)
+        return
+      }
 		case "cylreq":
 			var p Process
 			p.position, _ = strconv.Atoi(words[1])
-
-      		if(p.position < sys.lowerCyl || p.position > sys.upperCyl) {
-        		fmt.Printf("ERROR(15):Request out of bounds:  req (%d) > upper (%d) or < lower (%d)\n", p.position, sys.upperCyl, sys.lowerCyl)
-      		} else { procList = append(procList, p) }
+      if(p.position < sys.lowerCyl || p.position > sys.upperCyl) {
+        fmt.Printf("ERROR(15):Request out of bounds:  req (%d) > upper (%d) or < lower (%d)\n", p.position, sys.upperCyl, sys.lowerCyl)
+      } else { procList = append(procList, p) }
 		}
 
 	}
