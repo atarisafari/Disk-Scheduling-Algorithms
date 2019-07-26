@@ -1,3 +1,4 @@
+/*    
 /*
  “I Ethan Finlay (et428907) affirm that this program is entirely my own work and
 that I have neither developed my code together with any another person, nor copied any code from any
@@ -16,7 +17,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	//"sort"
+	"sort"
 )
 
 type Process struct {
@@ -33,7 +34,7 @@ type System struct {
 }
 
 // var input = os.Args[1]
-var input = "fcfs01.txt"
+var input = "sstf01.txt"
 var in, err1 = os.Open(input)
 var reader = bufio.NewReader(in)
 
@@ -66,26 +67,26 @@ func processInput() {
 			sys.lowerCyl, _ = strconv.Atoi(words[1])
 		case "upperCYL":
 			sys.upperCyl, _ = strconv.Atoi(words[1])
-      if(sys.upperCyl < sys.lowerCyl) {
-        fmt.Printf("ABORT(13):upper (%d) < lower (%d)\n", sys.upperCyl, sys.lowerCyl)
-        return
-      }
+      		if(sys.upperCyl < sys.lowerCyl) {
+        		fmt.Printf("ABORT(13):upper (%d) < lower (%d)\n", sys.upperCyl, sys.lowerCyl)
+        		return
+      		}
 		case "initCYL":
 			sys.curCyl, _ = strconv.Atoi(words[1])
-      if(sys.curCyl > sys.upperCyl) {
-        fmt.Printf("ABORT(11):initial (%d) > upper (%d)\n", sys.curCyl, sys.upperCyl)
-        return
-      } else if(sys.curCyl < sys.lowerCyl) {
-        fmt.Printf("ABORT(12):initial (%d) < lower (%d)\n", sys.curCyl, sys.lowerCyl)
-        return
-      }
+      		if(sys.curCyl > sys.upperCyl) {
+        		fmt.Printf("ABORT(11):initial (%d) > upper (%d)\n", sys.curCyl, sys.upperCyl)
+        		return
+      		} else if(sys.curCyl < sys.lowerCyl) {
+        		fmt.Printf("ABORT(12):initial (%d) < lower (%d)\n", sys.curCyl, sys.lowerCyl)
+        		return
+      		}
 		case "cylreq":
 			var p Process
 			p.position, _ = strconv.Atoi(words[1])
-      if(p.position < sys.lowerCyl || p.position > sys.upperCyl) {
-        fmt.Printf("ERROR(15):Request out of bounds:  req (%d) > upper (%d) or < lower (%d)\n", p.position, sys.upperCyl, sys.lowerCyl)
-      } else { procList = append(procList, p) }
-		}
+      		if(p.position < sys.lowerCyl || p.position > sys.upperCyl) {
+        		fmt.Printf("ERROR(15):Request out of bounds:  req (%d) > upper (%d) or < lower (%d)\n", p.position, sys.upperCyl, sys.lowerCyl)
+      		} else { procList = append(procList, p) }
+			}
 
 	}
 
@@ -100,8 +101,10 @@ func processInput() {
   }
 
 	switch alg {
-	case "fcfs":
-		fcfs(procList, sys)
+		case "fcfs":
+			fcfs(procList, sys)
+		case "sstf":
+			sstf(procList, sys)
 	}
 }
 
@@ -121,20 +124,39 @@ func fcfs(procList []Process, sys System) {
 }
 
 func sstf(procList []Process, sys System) {
-  //Loop until all processes are visited 
-    //Pass proclist and sys into calc diff
-    //Find min distance of proclist
-    //Go there aka set curCyl to that position
-    //Set that process as visited 
-    //Add that distance to sys.traversed
 
-    //If you're changing the order of procList as you loop through it you
-    //will run into problems 
+	var headIndex int
+
+	//Sort by location
+	sort.Slice(procList, func(i, j int) bool {
+		return procList[i].position < procList[j].position
+	})
+
+	//Find first index with location value greater than sys.curCyl
+	for i := 0; i < len(procList); i++ {
+		if(procList[i].position > sys.curCyl) {
+			headIndex = i
+			break
+		}
+	}
+
+	fmt.Println("Head is at", procList[headIndex].position)
+
+	//Check whether that value or the one at the index to the left is closer
+	//Go there
+	//Mark it as visited and add distance
+	//Set index to that location
+
+	//Loop until all processes are visited
+		//Check left/right of current index for closest unaccessed (return -1 if you reach an endpoint)
+		//Go to closer location
+		//Mark it as visited and add distance
+		//Set index to that location 
+		//Repeat
+   
 
     //Maybe keep a counter for # procs visited, and if it's equal to proc len
     // then we break
-	
-    //OR maybe just remove visited elements from procList ...
 }
 
 func calcDiff(procList []Process, sys System) []Process {
