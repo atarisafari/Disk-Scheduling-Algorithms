@@ -34,7 +34,7 @@ type System struct {
 }
 
 // var input = os.Args[1]
-var input = "sstf01.txt"
+var input = "fcfs01.txt"
 var in, err1 = os.Open(input)
 var reader = bufio.NewReader(in)
 
@@ -125,7 +125,7 @@ func fcfs(procList []Process, sys System) {
 
 func sstf(procList []Process, sys System) {
 
-	var headIndex int
+	var headIndex, leftDist, rightDist, numAccessed int
 
 	//Sort by location
 	sort.Slice(procList, func(i, j int) bool {
@@ -139,30 +139,85 @@ func sstf(procList []Process, sys System) {
 			break
 		}
 	}
+  //Make sure we don't go out of bounds
+  if(headIndex == 0) {
+    leftDist = math.MaxInt64
+  } else {
+    leftDist = int(math.Abs(float64(procList[headIndex-1].position - sys.curCyl)))
+  }
 
-	fmt.Println("Head is at", procList[headIndex].position)
-
-	//Check whether that value or the one at the index to the left is closer
-	//Go there
+  rightDist = int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
+  
+  //Check whether that value or the one at the index to the left is closer
+  //Go there
 	//Mark it as visited and add distance
 	//Set index to that location
+  if(rightDist > leftDist) {
+    headIndex--
+    sys.traversed += leftDist
+  } else {
+    sys.traversed += rightDist
+  }
+
+  procList[headIndex].accessed = true
+  numAccessed++
+  fmt.Printf("Servicing %5d\n", procList[headIndex].position)
 
 	//Loop until all processes are visited
-		//Check left/right of current index for closest unaccessed (return -1 if you reach an endpoint)
-		//Go to closer location
-		//Mark it as visited and add distance
-		//Set index to that location 
-		//Repeat
-   
+  for {
 
-    //Maybe keep a counter for # procs visited, and if it's equal to proc len
-    // then we break
+    if(numAccessed >= len(procList)) {
+      break
+    }
+
+    //Check left/right of current index for closest unaccessed (return -1 if you reach an endpoint)
+    leftIndex := check(procList,headIndex,"left")
+    rightIndex := check(procList,headIndex,"right")
+
+    if(leftIndex == -1) {
+      rightDist = int(math.Abs(float64(procList[headIndex].position - procList[rightIndex].position)))
+      headIndex = rightIndex
+      sys.traversed += rightDist
+    } else if(rightIndex == - 1) {
+      leftDist = int(math.Abs(float64(procList[headIndex].position - procList[leftIndex].position)))
+      headIndex = leftIndex
+      sys.traversed += leftDist
+    } else {
+      leftDist = int(math.Abs(float64(procList[headIndex].position - procList[leftIndex].position)))
+      rightDist = int(math.Abs(float64(procList[headIndex].position - procList[rightIndex].position)))
+
+      if(leftDist > rightDist) {
+        headIndex = rightIndex
+        sys.traversed += rightDist
+      } else {
+        headIndex = leftIndex
+        sys.traversed += leftDist
+      }
+    }
+
+    procList[headIndex].accessed = true
+    numAccessed++
+    fmt.Printf("Servicing %5d\n", procList[headIndex].position)
+  }
+
+  fmt.Print("FCFS traversal count = ", sys.traversed)
 }
 
-func calcDiff(procList []Process, sys System) []Process {
-	for _, p := range procList {
-		p.difference = int(math.Abs(float64(p.position - sys.curCyl)))
-	}
+func check(procList []Process, index int, dir string) int {
 
-	return procList
+  if(dir == "left") { 
+    for i := index; i >= 0; i-- {
+      if(procList[i].accessed == false) {
+        return i
+      }
+    }
+  } else if(dir == "right") {
+    for i := index; i < len(procList); i++ {
+      if(procList[i].accessed == false) {
+        return i
+      }
+    }
+
+  }
+  return -1;
 }
