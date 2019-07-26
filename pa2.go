@@ -1,4 +1,3 @@
-/*    
 /*
  “I Ethan Finlay (et428907) affirm that this program is entirely my own work and
 that I have neither developed my code together with any another person, nor copied any code from any
@@ -105,6 +104,8 @@ func processInput() {
 			fcfs(procList, sys)
 		case "sstf":
 			sstf(procList, sys)
+    case "scan":
+      scan(procList, sys)
 	}
 }
 
@@ -201,6 +202,22 @@ func sstf(procList []Process, sys System) {
   }
 
   fmt.Print("FCFS traversal count = ", sys.traversed)
+}
+
+func scan(procList []Process, sys System) {
+  var headIndex int
+
+  //Sort by location
+  sort.Slice(procList, func(i, j int) bool {
+		return procList[i].position < procList[j].position
+	})
+  //Find first index with location value greater than sys.curCyl
+  for i := 0; i < len(procList); i++ {
+		if(procList[i].position > sys.curCyl) {
+			headIndex = i
+			break
+		}
+	}
 }
 
 func check(procList []Process, index int, dir string) int {
