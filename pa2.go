@@ -1,3 +1,4 @@
+/*    
 /*
  “I Ethan Finlay (et428907) affirm that this program is entirely my own work and
 that I have neither developed my code together with any another person, nor copied any code from any
@@ -201,11 +202,11 @@ func sstf(procList []Process, sys System) {
     fmt.Printf("Servicing %5d\n", procList[headIndex].position)
   }
 
-  fmt.Print("SSTF traversal count = ", sys.traversed)
+  fmt.Print("FCFS traversal count = ", sys.traversed)
 }
 
 func scan(procList []Process, sys System) {
-  var headIndex int
+  var headIndex, numAccessed int
 
   //Sort by location
   sort.Slice(procList, func(i, j int) bool {
@@ -218,6 +219,23 @@ func scan(procList []Process, sys System) {
 			break
 		}
 	}
+
+  //Go there
+  dist := int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
+  sys.traversed += dist
+  procList[headIndex].accessed = true
+  numAccessed++
+
+  //Loop until all processes have been accessed
+  for {
+    
+    if(numAccessed >= len(procList)) {
+      break
+    }
+
+    numAccessed++
+  }
+
 }
 
 func check(procList []Process, index int, dir string) int {
