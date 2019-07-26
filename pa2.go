@@ -201,7 +201,7 @@ func sstf(procList []Process, sys System) {
     fmt.Printf("Servicing %5d\n", procList[headIndex].position)
   }
 
-  fmt.Print("FCFS traversal count = ", sys.traversed)
+  fmt.Print("SSTF traversal count = ", sys.traversed)
 }
 
 func scan(procList []Process, sys System) {
