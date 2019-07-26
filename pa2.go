@@ -232,6 +232,8 @@ func scan(procList []Process, sys System) {
     if(numAccessed >= len(procList)) {
       break
     }
+	  
+    //Move up until you reach the upper limit, then move down 
 
     numAccessed++
   }
