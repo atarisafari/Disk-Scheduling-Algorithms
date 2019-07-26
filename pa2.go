@@ -207,6 +207,7 @@ func sstf(procList []Process, sys System) {
 
 func scan(procList []Process, sys System) {
   var headIndex, numAccessed int
+  var dir string
 
   //Sort by location
   sort.Slice(procList, func(i, j int) bool {
@@ -225,6 +226,8 @@ func scan(procList []Process, sys System) {
   sys.traversed += dist
   procList[headIndex].accessed = true
   numAccessed++
+	
+  dir = "right"
 
   //Loop until all processes have been accessed
   for {
