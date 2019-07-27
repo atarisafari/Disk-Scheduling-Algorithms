@@ -1,4 +1,3 @@
-/*    
 /*
  “I Ethan Finlay (et428907) affirm that this program is entirely my own work and
 that I have neither developed my code together with any another person, nor copied any code from any
@@ -34,7 +33,7 @@ type System struct {
 }
 
 // var input = os.Args[1]
-var input = "fcfs01.txt"
+var input = "scan20.txt"
 var in, err1 = os.Open(input)
 var reader = bufio.NewReader(in)
 
@@ -206,7 +205,8 @@ func sstf(procList []Process, sys System) {
 }
 
 func scan(procList []Process, sys System) {
-  var headIndex, numAccessed int
+
+  var headIndex, numAccessed, index int
   var dir string
 
   //Sort by location
@@ -226,6 +226,7 @@ func scan(procList []Process, sys System) {
   sys.traversed += dist
   procList[headIndex].accessed = true
   numAccessed++
+  fmt.Printf("Servicing %5d\n", procList[headIndex].position)
 	
   dir = "right"
 
@@ -235,11 +236,34 @@ func scan(procList []Process, sys System) {
     if(numAccessed >= len(procList)) {
       break
     }
-	  
-    //Move up until you reach the upper limit, then move down 
+	
+    //Move up until you reach the upper limit, then move down
+    index = check(procList,headIndex,dir)
 
+    //If there are no more processes to the right, , and then the distance from the end to the next leftmost available process
+    if(index == -1) {
+
+    	//add the remaining distance from the last process to the end
+    	sys.traversed += int(math.Abs(float64(procList[len(procList)-1].position - sys.upperCyl)))
+
+    	//and then the distance from the end to the next leftmost available process
+    	dir = "left"
+    
+    	index = check(procList,headIndex,dir)
+
+    	sys.traversed += int(math.Abs(float64(sys.upperCyl - procList[index].position)))
+    } else {
+    	//proceed normally, go to index
+    	sys.traversed += int(math.Abs(float64(procList[headIndex].position - procList[index].position)))
+    }
+
+    headIndex = index
+    procList[headIndex].accessed = true
     numAccessed++
+    fmt.Printf("Servicing %5d\n", procList[headIndex].position)
   }
+
+  fmt.Print("SCAN traversal count = ", sys.traversed)
 
 }
 
