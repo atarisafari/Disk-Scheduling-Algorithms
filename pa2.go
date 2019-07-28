@@ -32,8 +32,8 @@ type System struct {
 	traversed int
 }
 
-// var input = os.Args[1]
-var input = "scan20.txt"
+var input = os.Args[1]
+//var input = "c-scan20.txt"
 var in, err1 = os.Open(input)
 var reader = bufio.NewReader(in)
 
@@ -89,23 +89,29 @@ func processInput() {
 
 	}
 
-  fmt.Println("Seek algorithm:", strings.ToUpper(alg))
-  fmt.Printf("\tLower cylinder: %5d\n", sys.lowerCyl)
-  fmt.Printf("\tUpper cylinder: %5d\n", sys.upperCyl)
-  fmt.Printf("\tInit cylinder:  %5d\n", sys.curCyl)
+ 	fmt.Println("Seek algorithm:", strings.ToUpper(alg))
+  	fmt.Printf("\tLower cylinder: %5d\n", sys.lowerCyl)
+  	fmt.Printf("\tUpper cylinder: %5d\n", sys.upperCyl)
+  	fmt.Printf("\tInit cylinder:  %5d\n", sys.curCyl)
 	fmt.Println("\tCylinder requests:")
 
-  for _, p := range procList {
-    fmt.Printf("\t\tCylinder: %5d\n", p.position)
-  }
+  	for _, p := range procList {
+    	fmt.Printf("\t\tCylinder %5d\n", p.position)
+  	}
 
 	switch alg {
 		case "fcfs":
 			fcfs(procList, sys)
 		case "sstf":
 			sstf(procList, sys)
-    case "scan":
-      scan(procList, sys)
+    	case "scan":
+      		scan(procList, sys)
+      	case "c-scan":
+      		cscan(procList, sys)
+      	case "look":
+      		look(procList, sys)
+      	case "c-look":
+      		clook(procList, sys)
 	}
 }
 
@@ -121,7 +127,7 @@ func fcfs(procList []Process, sys System) {
 		}
 	}
 
-	fmt.Print("FCFS traversal count = ", sys.traversed)
+	fmt.Printf("FCFS traversal count = %5d\n", sys.traversed)
 }
 
 func sstf(procList []Process, sys System) {
@@ -141,34 +147,34 @@ func sstf(procList []Process, sys System) {
 		}
 	}
   //Make sure we don't go out of bounds
-  if(headIndex == 0) {
-    leftDist = math.MaxInt64
-  } else {
-    leftDist = int(math.Abs(float64(procList[headIndex-1].position - sys.curCyl)))
-  }
+ 	if(headIndex == 0) {
+    	leftDist = math.MaxInt64
+  	} else {
+    	leftDist = int(math.Abs(float64(procList[headIndex-1].position - sys.curCyl)))
+  	}
 
-  rightDist = int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
+  	rightDist = int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
   
-  //Check whether that value or the one at the index to the left is closer
-  //Go there
+  	//Check whether that value or the one at the index to the left is closer
+  	//Go there
 	//Mark it as visited and add distance
 	//Set index to that location
-  if(rightDist > leftDist) {
-    headIndex--
-    sys.traversed += leftDist
-  } else {
-    sys.traversed += rightDist
-  }
+ 	if(rightDist > leftDist) {
+    	headIndex--
+    	sys.traversed += leftDist
+  	} else {
+    	sys.traversed += rightDist
+  	}
 
-  procList[headIndex].accessed = true
-  numAccessed++
-  fmt.Printf("Servicing %5d\n", procList[headIndex].position)
+  	procList[headIndex].accessed = true
+  	numAccessed++
+  	fmt.Printf("Servicing %5d\n", procList[headIndex].position)
 
 	//Loop until all processes are visited
-  for {
+ 	for {
 
     if(numAccessed >= len(procList)) {
-      break
+    	break
     }
 
     //Check left/right of current index for closest unaccessed (return -1 if you reach an endpoint)
@@ -176,24 +182,24 @@ func sstf(procList []Process, sys System) {
     rightIndex := check(procList,headIndex,"right")
 
     if(leftIndex == -1) {
-      rightDist = int(math.Abs(float64(procList[headIndex].position - procList[rightIndex].position)))
-      headIndex = rightIndex
-      sys.traversed += rightDist
+    	rightDist = int(math.Abs(float64(procList[headIndex].position - procList[rightIndex].position)))
+    	headIndex = rightIndex
+    	sys.traversed += rightDist
     } else if(rightIndex == - 1) {
-      leftDist = int(math.Abs(float64(procList[headIndex].position - procList[leftIndex].position)))
-      headIndex = leftIndex
-      sys.traversed += leftDist
+      	leftDist = int(math.Abs(float64(procList[headIndex].position - procList[leftIndex].position)))
+      	headIndex = leftIndex
+      	sys.traversed += leftDist
     } else {
-      leftDist = int(math.Abs(float64(procList[headIndex].position - procList[leftIndex].position)))
-      rightDist = int(math.Abs(float64(procList[headIndex].position - procList[rightIndex].position)))
+      	leftDist = int(math.Abs(float64(procList[headIndex].position - procList[leftIndex].position)))
+      	rightDist = int(math.Abs(float64(procList[headIndex].position - procList[rightIndex].position)))
 
-      if(leftDist > rightDist) {
-        headIndex = rightIndex
-        sys.traversed += rightDist
-      } else {
-        headIndex = leftIndex
-        sys.traversed += leftDist
-      }
+      	if(leftDist > rightDist) {
+        	headIndex = rightIndex
+        	sys.traversed += rightDist
+      	} else {
+        	headIndex = leftIndex
+        	sys.traversed += leftDist
+      	}
     }
 
     procList[headIndex].accessed = true
@@ -201,69 +207,137 @@ func sstf(procList []Process, sys System) {
     fmt.Printf("Servicing %5d\n", procList[headIndex].position)
   }
 
-  fmt.Print("FCFS traversal count = ", sys.traversed)
+ 	fmt.Printf("SSTF traversal count = %5d\n", sys.traversed)
 }
 
 func scan(procList []Process, sys System) {
 
-  var headIndex, numAccessed, index int
-  var dir string
+  	var headIndex, numAccessed, index int
+  	var dir string
 
-  //Sort by location
-  sort.Slice(procList, func(i, j int) bool {
+  	//Sort by location
+  	sort.Slice(procList, func(i, j int) bool {
 		return procList[i].position < procList[j].position
 	})
-  //Find first index with location value greater than sys.curCyl
-  for i := 0; i < len(procList); i++ {
+  	//Find first index with location value greater than sys.curCyl
+  	for i := 0; i < len(procList); i++ {
 		if(procList[i].position > sys.curCyl) {
 			headIndex = i
 			break
 		}
 	}
 
-  //Go there
-  dist := int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
-  sys.traversed += dist
-  procList[headIndex].accessed = true
-  numAccessed++
-  fmt.Printf("Servicing %5d\n", procList[headIndex].position)
+  	//Go there
+  	dist := int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
+  	sys.traversed += dist
+  	procList[headIndex].accessed = true
+  	numAccessed++
+  	fmt.Printf("Servicing %5d\n", procList[headIndex].position)
 	
-  dir = "right"
+  	dir = "right"
 
-  //Loop until all processes have been accessed
-  for {
+  	//Loop until all processes have been accessed
+  	for {
     
-    if(numAccessed >= len(procList)) {
-      break
-    }
+    	if(numAccessed >= len(procList)) {
+      		break
+    	}
 	
-    //Move up until you reach the upper limit, then move down
-    index = check(procList,headIndex,dir)
-
-    //If there are no more processes to the right, , and then the distance from the end to the next leftmost available process
-    if(index == -1) {
-
-    	//add the remaining distance from the last process to the end
-    	sys.traversed += int(math.Abs(float64(procList[len(procList)-1].position - sys.upperCyl)))
-
-    	//and then the distance from the end to the next leftmost available process
-    	dir = "left"
-    
+    	//Move up until you reach the upper limit, then move down
     	index = check(procList,headIndex,dir)
 
-    	sys.traversed += int(math.Abs(float64(sys.upperCyl - procList[index].position)))
-    } else {
-    	//proceed normally, go to index
-    	sys.traversed += int(math.Abs(float64(procList[headIndex].position - procList[index].position)))
+    	//If there are no more processes to the right, , and then the distance from the end to the next leftmost available process
+    	if(index == -1) {
+
+    		//add the remaining distance from the last process to the end
+    		sys.traversed += int(math.Abs(float64(procList[len(procList)-1].position - sys.upperCyl)))
+
+    		//and then the distance from the end to the next leftmost available process
+    		dir = "left"
+    
+    		index = check(procList,headIndex,dir)
+
+    		sys.traversed += int(math.Abs(float64(sys.upperCyl - procList[index].position)))
+    	} else {
+    		//proceed normally, go to index
+    		sys.traversed += int(math.Abs(float64(procList[headIndex].position - procList[index].position)))
+    	}
+
+    	headIndex = index
+    	procList[headIndex].accessed = true
+    	numAccessed++
+    	fmt.Printf("Servicing %5d\n", procList[headIndex].position)
+	}
+
+  	fmt.Printf("SCAN traversal count = %5d\n", sys.traversed)
+
+}
+
+//Similar to scan, except you loop to the bottom of the elevator when you reach the top
+func cscan(procList []Process, sys System) {
+	var headIndex, numAccessed, index int
+
+
+	//Sort by location
+	sort.Slice(procList, func(i, j int) bool {
+		return procList[i].position < procList[j].position
+	})
+
+  	//Find first index with location value greater than sys.curCyl
+  	for i := 0; i < len(procList); i++ {
+		if(procList[i].position > sys.curCyl) {
+			headIndex = i
+			break
+		}
+	}
+
+  	//Go there
+  	dist := int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
+  	sys.traversed += dist
+  	procList[headIndex].accessed = true
+  	numAccessed++
+  	fmt.Printf("Servicing %5d\n", procList[headIndex].position)
+
+  	//Loop until all processes have been accessed
+  	for {
+    
+    	if(numAccessed >= len(procList)) {
+      		break
+    	}
+	
+    	//Move up until you reach the upper limit, then 'circle' back
+    	index = check(procList,headIndex,"right")
+
+    	//If there are no more processes to the right, circle back
+    	if(index == -1) {
+    		//add the remaining distance from the last process to the first process
+    		sys.traversed += int(math.Abs(float64(procList[len(procList)-1].position - sys.upperCyl)))
+    		index = 0
+    		//Move back to the lower cyl
+    		sys.traversed += int(math.Abs(float64(sys.upperCyl - sys.lowerCyl)))
+    		//Move from lowercyl to leftmost process
+    		sys.traversed += int(math.Abs(float64(sys.lowerCyl - procList[index].position)))
+    	} else {
+    		//proceed normally, go to index
+    		sys.traversed += int(math.Abs(float64(procList[headIndex].position - procList[index].position)))
+    	}
+
+    	headIndex = index
+    	procList[headIndex].accessed = true
+    	numAccessed++
+    	fmt.Printf("Servicing %5d\n", procList[headIndex].position)
     }
 
-    headIndex = index
-    procList[headIndex].accessed = true
-    numAccessed++
-    fmt.Printf("Servicing %5d\n", procList[headIndex].position)
-  }
+ 	fmt.Printf("C-SCAN traversal count = %5d\n", sys.traversed)
 
-  fmt.Print("SCAN traversal count = ", sys.traversed)
+}
+
+//
+func look(procList []Process, sys System) {
+
+}
+
+func clook(procList []Process, sys System) {
 
 }
 
