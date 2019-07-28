@@ -394,6 +394,57 @@ func look(procList []Process, sys System) {
 }
 
 func clook(procList []Process, sys System) {
+	var headIndex, numAccessed, index int
+
+
+	//Sort by location
+	sort.Slice(procList, func(i, j int) bool {
+		return procList[i].position < procList[j].position
+	})
+
+  	//Find first index with location value greater than sys.curCyl
+  	for i := 0; i < len(procList); i++ {
+		if(procList[i].position > sys.curCyl) {
+			headIndex = i
+			break
+		}
+	}
+
+  	//Go there
+  	dist := int(math.Abs(float64(procList[headIndex].position - sys.curCyl)))
+  	sys.traversed += dist
+  	procList[headIndex].accessed = true
+  	numAccessed++
+  	fmt.Printf("Servicing %5d\n", procList[headIndex].position)
+
+  	//Loop until all processes have been accessed
+  	for {
+    
+    	if(numAccessed >= len(procList)) {
+      		break
+    	}
+	
+    	//Move up until you reach the upper limit, then 'circle' back
+    	index = check(procList,headIndex,"right")
+
+    	//If there are no more processes to the right, circle back
+    	if(index == -1) {
+    		//add the remaining distance from the last process to the first process
+    		index = 0
+    		//Move back to the leftmost process
+    		sys.traversed += int(math.Abs(float64(procList[len(procList)-1].position - procList[index].position)))
+    	} else {
+    		//proceed normally, go to index
+    		sys.traversed += int(math.Abs(float64(procList[headIndex].position - procList[index].position)))
+    	}
+
+    	headIndex = index
+    	procList[headIndex].accessed = true
+    	numAccessed++
+    	fmt.Printf("Servicing %5d\n", procList[headIndex].position)
+    }
+
+ 	fmt.Printf("C-LOOK traversal count = %5d\n", sys.traversed)
 
 }
 
